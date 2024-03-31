@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
-import AppContext, { fetchUserData } from "../context/appContext";
+import AppContext, { fetchPostData } from "../context/appContext";
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -25,7 +25,7 @@ const Login = () => {
           const token = res.data.token;
           localStorage.setItem("token", token);
           setIsAuthenticated(true);
-          fetchUserData(setUser, navigate);
+          fetchPostData(setUser, navigate);
       } else {
         console.error("Error submitting form:", response.statusText);
       }

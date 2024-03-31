@@ -1,9 +1,9 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 
 const AppContext = createContext();
 
-export const fetchUserData = async (setUser, navigate) => {
+export const fetchPostData = async (setUser, navigate) => {
   try {
     const token = localStorage.getItem("token");
     const config = {
@@ -17,14 +17,13 @@ export const fetchUserData = async (setUser, navigate) => {
     navigate("/");
   } catch (error) {
     console.log(error);
-    navigate("/login"); 
+    navigate("/login");
   }
 };
 
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
 
   const value = {
     user,
