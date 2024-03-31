@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import colors from 'colors';
 import postRoutes from './routes/postRoutes.js'
 import { connectDB } from './db/db.js';
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 
 // middleware
 app.use(express.json());
+app.use(cors());
 
 // routes
 app.use("/api/v1",postRoutes)
