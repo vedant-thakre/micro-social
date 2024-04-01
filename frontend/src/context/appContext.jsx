@@ -3,7 +3,7 @@ import axios from "axios";
 
 const AppContext = createContext();
 
-export const fetchPostData = async (setUser, navigate) => {
+export const fetchUserData = async (setUser, navigate) => {
   try {
     const token = localStorage.getItem("token");
     const config = {
@@ -24,12 +24,16 @@ export const fetchPostData = async (setUser, navigate) => {
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [allPosts, setAllPosts] = useState([]);
+
 
   const value = {
     user,
     setUser,
     isAuthenticated,
     setIsAuthenticated,
+    allPosts,
+    setAllPosts,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

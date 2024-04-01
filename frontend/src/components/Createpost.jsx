@@ -1,19 +1,26 @@
 import React, { useContext, useEffect, useState } from "react";
-import AppContext, { fetchPostData } from "../context/appContext";
+import AppContext, { fetchUserData } from "../context/appContext";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
+import AllComments from "./AllComments";
 
 const CreatePost = () => {
   const [post, setPost] = useState({
     title: "",
     description: "",
   });
-  const [allPosts, setAllPosts] = useState([]);
+  const [content, setContent] = useState({});
 
   const navigate = useNavigate();
 
-  const { isAuthenticated, user, setUser, setIsAuthenticated } =
-    useContext(AppContext);
+  const {
+    isAuthenticated,
+    user,
+    setUser,
+    setIsAuthenticated,
+    allPosts,
+    setAllPosts,
+  } = useContext(AppContext);
 
   const handlesubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +30,7 @@ const CreatePost = () => {
         description: post.description,
         userId: user.id,
       });
+      fetchPostData();
       console.log(res.data);
     } catch (error) {
       console.error("Post create error:", error);
@@ -35,6 +43,21 @@ const CreatePost = () => {
     navigate("/login");
   };
 
+  const handleCommentSubmit = async (e, id) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:3001/api/v1/add", {
+        content: content[id],
+        userId: user._id,
+        postId: id,
+      });
+      console.log(res.data);
+      setContent({ ...content, [id]: "" });
+    } catch (error) {
+      console.error("Post create error:", error);
+    }
+  };
+
   // console.log(user);
 
   useEffect(() => {
@@ -44,20 +67,23 @@ const CreatePost = () => {
     } else {
       navigate("/login");
     }
-    fetchPostData(setUser, navigate);
+    fetchUserData(setUser, navigate);
   }, []);
 
+  //console.log(allPosts);
+
+  const fetchPostData = async () => {
+    try {
+      const res = await axios.get("http://localhost:3002/api/v1/all-posts");
+      setAllPosts(res.data.posts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
   useEffect(() => {
-    const fetchPostData = async () => {
-      try {
-        const res = await axios.get("http://localhost:3002/api/v1/all-posts");
-        setAllPosts(res.data.posts);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchPostData();
-  }, [allPosts]);
+  }, []);
 
   return (
     <div
@@ -118,9 +144,9 @@ const CreatePost = () => {
           padding: "20px",
         }}
       >
-        {allPosts.map((item, index) => (
+        {allPosts.map((item) => (
           <div
-            key={index}
+            key={item.id}
             style={{
               padding: "10px 20px",
               border: "1px solid #ccc",
@@ -133,11 +159,32 @@ const CreatePost = () => {
             </p>
             <div style={{ height: "1px", background: "gray" }}></div>
             <h5 style={{ margin: "10px 0px" }}>Comments</h5>
-            <input
-              style={{ width: "100%" }}
-              type="text"
-              placeholder="Add comment"
-            />
+            <form
+              //onSubmit={(e) => handleCommentSubmit(e, item._id)}
+              style={{ display: "flex", gap: "15px" }}
+            >
+              <input
+                style={{ width: "100%" }}
+                value={content[item._id]}
+                onChange={(e) =>
+                  setContent({ ...content, [item._id]: e.target.value })
+                }
+                type="text"
+                placeholder="Add comment"
+              />
+              <button
+                style={{
+                  backgroundColor: "blueviolet",
+                  padding: "3px 10px",
+                  borderRadius: "4px",
+                  fontSize: "13px",
+                }}
+                type="submit"
+              >
+                Submit
+              </button>
+            </form>
+            <AllComments />
           </div>
         ))}
       </div>
