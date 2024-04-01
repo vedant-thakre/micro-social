@@ -2,14 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import AppContext, { fetchUserData } from "../context/appContext";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
-import AllComments from "./AllComments";
+import AllComments, { getCommentsForPost } from "./AllComments";
+import { MdDelete } from "react-icons/md";
 
 const CreatePost = () => {
   const [post, setPost] = useState({
     title: "",
     description: "",
   });
-  const [content, setContent] = useState({});
 
   const navigate = useNavigate();
 
@@ -20,6 +20,8 @@ const CreatePost = () => {
     setIsAuthenticated,
     allPosts,
     setAllPosts,
+    allComments,
+    setAllComments,
   } = useContext(AppContext);
 
   const handlesubmit = async (e) => {
@@ -31,6 +33,7 @@ const CreatePost = () => {
         userId: user.id,
       });
       fetchPostData();
+      setPost({ title: "", description: "" });
       console.log(res.data);
     } catch (error) {
       console.error("Post create error:", error);
@@ -43,20 +46,20 @@ const CreatePost = () => {
     navigate("/login");
   };
 
-  const handleCommentSubmit = async (e, id) => {
-    e.preventDefault();
+
+  const handleDelete = async (id) => {
     try {
-      const res = await axios.post("http://localhost:3001/api/v1/add", {
-        content: content[id],
-        userId: user._id,
-        postId: id,
-      });
+      const res = await axios.delete(
+        `http://localhost:3002/api/v1/delete/${id}`
+      );
+      fetchPostData();
       console.log(res.data);
-      setContent({ ...content, [id]: "" });
     } catch (error) {
       console.error("Post create error:", error);
     }
   };
+
+
 
   // console.log(user);
 
@@ -80,9 +83,10 @@ const CreatePost = () => {
       console.log(error);
     }
   };
-  
+
   useEffect(() => {
     fetchPostData();
+  
   }, []);
 
   return (
@@ -97,7 +101,13 @@ const CreatePost = () => {
       {/* Create Post */}
       <button
         onClick={handleLogout}
-        style={{ position: "absolute", top: "10px", right: "10px" }}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          padding: "8px 20px",
+          backgroundColor: "#ff3d3d",
+        }}
       >
         logout
       </button>
@@ -131,7 +141,9 @@ const CreatePost = () => {
               setPost({ ...post, [e.target.name]: e.target.value });
             }}
           />
-          <button type="submit">Create</button>
+          <button style={{ backgroundColor: "#636bfe" }} type="submit">
+            Create
+          </button>
         </form>
       </div>
       <div style={{ height: "1px", background: "gray" }}></div>
@@ -148,43 +160,38 @@ const CreatePost = () => {
           <div
             key={item.id}
             style={{
-              padding: "10px 20px",
+              padding: "15px 25px",
               border: "1px solid #ccc",
               borderRadius: "10px",
+              position: "relative",
             }}
           >
-            <h4 style={{ textAlign: "center", margin: "0px" }}>{item.title}</h4>
+            <MdDelete
+              onClick={() => handleDelete(item._id)}
+              fontSize={"22px"}
+              style={{
+                position: "absolute",
+                right: "8px",
+                top: "10px",
+                cursor: "pointer",
+                color: "#ff3d3d",
+              }}
+            />
+            <h4
+              style={{
+                textAlign: "center",
+                margin: "0px",
+                padding: "5px 8px",
+              }}
+            >
+              {item.title}
+            </h4>
             <p style={{ margin: "0px", padding: "10px 0px" }}>
               {item.description}
             </p>
             <div style={{ height: "1px", background: "gray" }}></div>
-            <h5 style={{ margin: "10px 0px" }}>Comments</h5>
-            <form
-              //onSubmit={(e) => handleCommentSubmit(e, item._id)}
-              style={{ display: "flex", gap: "15px" }}
-            >
-              <input
-                style={{ width: "100%" }}
-                value={content[item._id]}
-                onChange={(e) =>
-                  setContent({ ...content, [item._id]: e.target.value })
-                }
-                type="text"
-                placeholder="Add comment"
-              />
-              <button
-                style={{
-                  backgroundColor: "blueviolet",
-                  padding: "3px 10px",
-                  borderRadius: "4px",
-                  fontSize: "13px",
-                }}
-                type="submit"
-              >
-                Submit
-              </button>
-            </form>
-            <AllComments />
+           
+            <AllComments id={item._id} />
           </div>
         ))}
       </div>

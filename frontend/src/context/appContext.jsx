@@ -25,6 +25,7 @@ export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [allPosts, setAllPosts] = useState([]);
+  const [allComments, setAllComments] = useState({});
 
 
   const value = {
@@ -34,6 +35,8 @@ export const AppProvider = ({ children }) => {
     setIsAuthenticated,
     allPosts,
     setAllPosts,
+    allComments,
+    setAllComments,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

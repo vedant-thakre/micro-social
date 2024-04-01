@@ -25,7 +25,7 @@ const Login = () => {
           const token = res.data.token;
           localStorage.setItem("token", token);
           setIsAuthenticated(true);
-          fetchPostData(setUser, navigate);
+          fetchUserData(setUser, navigate);
       } else {
         console.error("Error submitting form:", response.statusText);
       }
