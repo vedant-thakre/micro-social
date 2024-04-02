@@ -15,6 +15,7 @@ app.get("/", (req, res) => {
     res.send("Post service is live");
 })
 
+
 // middleware
 app.use(express.json());
 app.use(cors());
