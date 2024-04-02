@@ -1,6 +1,7 @@
 import User from "../model/userModel.js";
 import jwt from "jsonwebtoken";
 import pkg from "bcryptjs";
+import axios from "axios";
 const { hash, compare } = pkg;
 
 export const registerUser = async (req, res) => {
@@ -13,12 +14,11 @@ export const registerUser = async (req, res) => {
 
     const hashedPassword = await hash(password, 10);
 
-    const newUser = new User({
+    const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
     });
-    await newUser.save();
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
