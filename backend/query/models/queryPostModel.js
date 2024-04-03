@@ -1,12 +1,16 @@
 import mongoose from "mongoose";
 
-const postSchema = new mongoose.Schema(
+const queryPostSchema = new mongoose.Schema(
   {
     title: {
       type: String,
       required: true,
     },
     description: {
+      type: String,
+      required: true,
+    },
+    postId: {
       type: String,
       required: true,
     },
@@ -17,13 +21,13 @@ const postSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-    }
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const Post = mongoose.model("Post", postSchema);
+const QueryPost = mongoose.model("QueryPost", queryPostSchema);
 
-export default Post;
+export default QueryPost;

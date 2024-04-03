@@ -1,29 +1,25 @@
 import mongoose from "mongoose";
 
-const postSchema = new mongoose.Schema(
+const queryCommentSchema = new mongoose.Schema(
   {
-    title: {
+    content: {
       type: String,
       required: true,
     },
-    description: {
-      type: String,
-      required: true,
-    },
-    userId: {
+    postId: {
       type: String,
       required: true,
     },
     name: {
       type: String,
       required: true,
-    }
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const Post = mongoose.model("Post", postSchema);
+const QueryComment = mongoose.model("QueryComment", queryCommentSchema);
 
-export default Post;
+export default QueryComment;

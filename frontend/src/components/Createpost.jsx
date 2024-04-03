@@ -31,6 +31,7 @@ const CreatePost = () => {
         title: post.title,
         description: post.description,
         userId: user.id,
+        name: user.name,
       });
       fetchPostData();
       setPost({ title: "", description: "" });
@@ -190,7 +191,33 @@ const CreatePost = () => {
               {item.description}
             </p>
             <div style={{ height: "1px", background: "gray" }}></div>
-           
+            <div
+              style={{
+                padding: "10px 5px",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <div
+                style={{
+                  width: "35px",
+                  height: "35px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "orange",
+                  borderRadius: "50%",
+                }}
+              >
+                <p style={{ fontSize: "23px", paddingBottom: "1px" }}>
+                  {item?.name.charAt(0).toUpperCase()}
+                </p>
+              </div>
+              <span>{item.name}</span>
+            </div>
+            <div style={{ height: "1px", background: "gray" }}></div>
+
             <AllComments id={item._id} />
           </div>
         ))}

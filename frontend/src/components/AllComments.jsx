@@ -26,7 +26,7 @@ const AllComments = ({ id }) => {
     try {
       const res = await axios.post("http://localhost:3001/api/v1/add", {
         content: content[id],
-        userId: user.id,
+        name: user.name,
         postId: id,
       });
       console.log(res.data);

@@ -19,6 +19,15 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
     });
+    
+    const event = await axios.post("http://localhost:3050/events", {
+      type: "UserCreated",
+      data: {
+        id: newUser._id,
+        name,
+      }
+    });
+
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
@@ -101,6 +110,18 @@ export const getUserById = async (req, res) => {
 
   } catch (error) {
     console.error("Error logging in:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getEvent = async (req, res) => {
+  try {
+    const event = req.body;
+    const msg = "Recieved Event";
+    console.log(msg, event.type);
+    res.status(201).json({ message: "Work done successfully" });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
