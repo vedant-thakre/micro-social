@@ -4,6 +4,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AllComments, { getCommentsForPost } from "./AllComments";
 import { MdDelete } from "react-icons/md";
+import { pastelColors, letterToNumber } from "../config/data";
 
 const CreatePost = () => {
   const [post, setPost] = useState({
@@ -167,7 +168,8 @@ const CreatePost = () => {
               position: "relative",
             }}
           >
-            <MdDelete
+            {
+              user.id === item.userId ?  <MdDelete
               onClick={() => handleDelete(item._id)}
               fontSize={"22px"}
               style={{
@@ -177,23 +179,24 @@ const CreatePost = () => {
                 cursor: "pointer",
                 color: "#ff3d3d",
               }}
-            />
+            /> : null
+            }
             <h4
               style={{
                 textAlign: "center",
                 margin: "0px",
-                padding: "5px 8px",
+                padding: "5px 0px",
               }}
             >
               {item.title}
             </h4>
-            <p style={{ margin: "0px", padding: "10px 0px" }}>
+            <p style={{ margin: "0px", padding: "20px 0px 30px 0px" }}>
               {item.description}
             </p>
             <div style={{ height: "1px", background: "gray" }}></div>
             <div
               style={{
-                padding: "10px 5px",
+                padding: "7px 5px",
                 display: "flex",
                 alignItems: "center",
                 gap: "10px",
@@ -201,20 +204,26 @@ const CreatePost = () => {
             >
               <div
                 style={{
-                  width: "35px",
-                  height: "35px",
+                  width: "30px",
+                  height: "30px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: "orange",
+                  backgroundColor: `${
+                    item?.name.charAt(0)
+                      ? pastelColors[letterToNumber(item.name.charAt(0)) - 1]
+                      : "orange"
+                  }`,
                   borderRadius: "50%",
                 }}
               >
-                <p style={{ fontSize: "23px", paddingBottom: "1px" }}>
+                <p style={{ fontSize: "18px", paddingBottom: "1px" }}>
                   {item?.name.charAt(0).toUpperCase()}
                 </p>
               </div>
-              <span>{item.name}</span>
+              <span style={{ fontSize: "14px" }}>
+                <b>{item.name}</b>
+              </span>
             </div>
             <div style={{ height: "1px", background: "gray" }}></div>
 
