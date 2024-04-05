@@ -13,9 +13,11 @@ export const createComment = async (req, res) => {
     const event = await axios.post("http://localhost:3050/events", {
       type: "CommentCreated",
       data: {
+        id:newCom._id,
         content,
         name,
-        postId
+        postId,
+        status : "pending"
       }
     });
 
@@ -43,12 +45,33 @@ export const getAllComments = async (req, res) => {
 
 export const getEvent = async (req, res) => {
   try {
-    const event = req.body;
+    const {data, type} = req.body;
      const msg = "Recieved Event";
-     console.log(msg, event.type);
-    res
-      .status(201)
-      .json({ message: "Work done successfully"});
+     console.log(msg, type);
+
+    console.log(type, data);
+
+    if(type === "CommentModerated"){
+      const comment = await Comment.findByIdAndUpdate(data.id, {
+        status: data.status,
+      } )
+
+      const event = await axios.post("http://localhost:3050/events", {
+        type: "CommentUpdated",
+        data: {
+          id:data.id,
+          content:data.content,
+          name: data.name,
+          postId:data.postId,
+          status:data.status,
+        },
+      });
+
+      return res
+        .status(200)
+        .json({ message: "Comment status updated"});
+    }
+      res.status(201).json({ message: "Work done successfully" });
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ message: "Internal server error" });

@@ -10,7 +10,15 @@ const queryCommentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    comId: {
+      type: String,
+      required: true,
+    },
     name: {
+      type: String,
+      required: true,
+    },
+    status: {
       type: String,
       required: true,
     },

@@ -38,7 +38,9 @@ export const handleEvent = async (req, res) => {
         const NewQueryComment = await QueryComment.create({
             content: data.content,
             name: data.name,
+            comId: data.id,
             postId: data.postId,
+            status: data.status,
         });
         console.log(NewQueryComment);
         res.status(201)
@@ -46,6 +48,17 @@ export const handleEvent = async (req, res) => {
                 message: "QueryComment created successfully",
                 data: NewQueryComment,
             });
+    } else if (type == "CommentUpdated") {
+      console.log("Recieved Event", type);
+      const UpdateComment = await QueryComment.findOneAndUpdate(
+        { comId: data.id},
+        { status: data.status},
+        { new: true }
+      );
+      res.status(201).json({
+        message: "QueryComment status updated successfully",
+        data: UpdateComment,
+      });
     }
   } catch (error) {
     console.error("Error creating post:", error);

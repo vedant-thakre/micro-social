@@ -20,10 +20,17 @@ app.post("/events", async (req, res) => {
 
   console.log(event);
 
-  await axios.post("http://localhost:3001/api/v1/events", event);
-  await axios.post("http://localhost:3002/api/v1/events", event);
-  await axios.post("http://localhost:3003/api/v1/events", event);
-  await axios.post("http://localhost:3004/api/v1/events", event);
+  if (event.type === "CommentModerated"){
+    await axios.post("http://localhost:3001/api/v1/events", event);
+  }else if (event.type === "CommentUpdated") {
+    await axios.post("http://localhost:3004/api/v1/events", event);
+  } else {
+    await axios.post("http://localhost:3001/api/v1/events", event);
+    await axios.post("http://localhost:3002/api/v1/events", event);
+    await axios.post("http://localhost:3003/api/v1/events", event);
+    await axios.post("http://localhost:3004/api/v1/events", event);
+    await axios.post("http://localhost:3005/api/v1/events", event);
+  }
 
   res.status(200).json({
     success: true,

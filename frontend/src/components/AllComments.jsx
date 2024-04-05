@@ -117,7 +117,9 @@ const AllComments = ({ id }) => {
                 justifyContent: "center",
                 backgroundColor: `${
                   comment?.name.charAt(0)
-                    ? pastelColors[26 - (letterToNumber(comment.name.charAt(0)) - 1) - 1]
+                    ? pastelColors[
+                        26 - (letterToNumber(comment.name.charAt(0)) - 1) - 1
+                      ]
                     : "orange"
                 }`,
                 borderRadius: "50%",
@@ -131,7 +133,19 @@ const AllComments = ({ id }) => {
               <p style={{ fontSize: "12px", margin: "0px", color: "#b1b1b1" }}>
                 <b>@{comment.name.replace(/\s/g, "").toLowerCase()}</b>
               </p>
-              <p style={{ fontSize: "14px", margin: "0px" }}>
+              <p
+                style={{
+                  fontSize: "14px",
+                  margin: "0px",
+                  color: `${
+                    comment.status === "rejected"
+                      ? "red"
+                      : comment.status === "pending"
+                      ? "grey"
+                      : "white"
+                  }`,
+                }}
+              >
                 {comment.content}
               </p>
             </div>
