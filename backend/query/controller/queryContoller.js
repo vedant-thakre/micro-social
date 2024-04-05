@@ -60,6 +60,7 @@ export const handleEvent = async (req, res) => {
         data: UpdateComment,
       });
     }
+    
   } catch (error) {
     console.error("Error creating post:", error);
     res.status(500).json({ message: "Internal server error" });

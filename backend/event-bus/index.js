@@ -3,9 +3,12 @@ import bodyParser from "body-parser";
 import axios from "axios";
 import dotenv from "dotenv";
 import colors from "colors";
+import { connectDB } from "./db/db.js";
+import eventRoutes from './routes/eventRoutes.js'
 
 dotenv.config();
 const app = express();
+connectDB();
 
 const PORT = process.env.PORT;
 
@@ -13,48 +16,18 @@ app.get("/", (req, res) => {
   res.send("Event bus is Live");
 });
 
+// middleware
 app.use(express.json());
 
+// routes
+app.use("/api/v1", eventRoutes);
+
 app.post("/events", async (req, res) => {
-  const event = req.body;
 
-  console.log(event);
-
-  if (event.type === "CommentModerated"){
-    await axios.post("http://localhost:3001/api/v1/events", event);
-  }else if (event.type === "CommentUpdated") {
-    await axios.post("http://localhost:3004/api/v1/events", event);
-  } else {
-    await axios.post("http://localhost:3001/api/v1/events", event);
-    await axios.post("http://localhost:3002/api/v1/events", event);
-    await axios.post("http://localhost:3003/api/v1/events", event);
-    await axios.post("http://localhost:3004/api/v1/events", event);
-    await axios.post("http://localhost:3005/api/v1/events", event);
-  }
-
-  res.status(200).json({
-    success: true,
-    message: "OK",
-  });
-
-  console.log("done")
 
 });
 
-// app.post("/events", async (req, res) => {
-//   const event = req.body;
-
-//   console.log("Hello");
-//   console.log(event);
-
-//   res.status(200).json({
-//     success: true,
-//     message: "OK",
-//     event,
-//   });
-
-// });
 
 app.listen(PORT, () => {
-  console.log(`Event bus is running on PORT ${PORT}`.bgRed.bold);
+  console.log(`Event bus is running on PORT ${PORT}`.yellow.bold);
 });

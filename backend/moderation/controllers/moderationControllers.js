@@ -62,7 +62,7 @@ export const getEvent = async (req, res) => {
 
       console.log("data", data);
 
-      const event = await axios.post("http://localhost:3050/events", {
+      const event = await axios.post("http://localhost:3050/api/v1/events", {
         type: "CommentModerated",
         data: {
           id: data.id,

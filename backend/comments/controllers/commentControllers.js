@@ -1,5 +1,5 @@
 import Comment from "../model/commentModle.js";
-import axios from 'axios';
+import axios from "axios";
 
 export const createComment = async (req, res) => {
   try {
@@ -10,15 +10,15 @@ export const createComment = async (req, res) => {
 
     const newCom = await Comment.create({ content, name, postId });
 
-    const event = await axios.post("http://localhost:3050/events", {
+    const event = await axios.post("http://localhost:3050/api/v1/events", {
       type: "CommentCreated",
       data: {
-        id:newCom._id,
+        id: newCom._id,
         content,
         name,
         postId,
-        status : "pending"
-      }
+        status: "pending",
+      },
     });
 
     res
@@ -45,36 +45,33 @@ export const getAllComments = async (req, res) => {
 
 export const getEvent = async (req, res) => {
   try {
-    const {data, type} = req.body;
-     const msg = "Recieved Event";
-     console.log(msg, type);
+    const { data, type } = req.body;
+    const msg = "Recieved Event";
+    console.log(msg, type);
 
     console.log(type, data);
 
-    if(type === "CommentModerated"){
+    if (type === "CommentModerated") {
       const comment = await Comment.findByIdAndUpdate(data.id, {
         status: data.status,
-      } )
+      });
 
-      const event = await axios.post("http://localhost:3050/events", {
+      const event = await axios.post("http://localhost:3050/api/v1/events", {
         type: "CommentUpdated",
         data: {
-          id:data.id,
-          content:data.content,
+          id: data.id,
+          content: data.content,
           name: data.name,
-          postId:data.postId,
-          status:data.status,
+          postId: data.postId,
+          status: data.status,
         },
       });
 
-      return res
-        .status(200)
-        .json({ message: "Comment status updated"});
+      return res.status(200).json({ message: "Comment status updated" });
     }
-      res.status(201).json({ message: "Work done successfully" });
+    res.status(201).json({ message: "Work done successfully" });
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
-

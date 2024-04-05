@@ -1,5 +1,5 @@
 import Post from "../model/postModel.js";
-import axios from 'axios';
+import axios from "axios";
 
 export const createPost = async (req, res) => {
   try {
@@ -12,17 +12,17 @@ export const createPost = async (req, res) => {
 
     const newPost = await Post.create({ title, description, userId, name });
 
-    const event = await axios.post("http://localhost:3050/events", {
+    const event = await axios.post("http://localhost:3050/api/v1/events", {
       type: "PostCreated",
       data: {
         id: newPost._id,
         title,
         description,
         userId,
-        name
+        name,
       },
     });
-    
+
     res
       .status(201)
       .json({ message: "Post created successfully", post: newPost });

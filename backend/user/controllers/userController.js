@@ -19,15 +19,14 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
     });
-    
-    const event = await axios.post("http://localhost:3050/events", {
+
+    const event = await axios.post("http://localhost:3050/api/v1/events", {
       type: "UserCreated",
       data: {
         id: newUser._id,
         name,
-      }
+      },
     });
-
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
@@ -53,11 +52,11 @@ export const loginUser = async (req, res) => {
       expiresIn: "1d",
     });
 
-    res.status(201).json({ 
+    res.status(201).json({
       success: true,
       message: "Login Successfull",
       token: token,
-     });
+    });
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -97,17 +96,15 @@ export const verifyToken = (req, res, next) => {
   }
 };
 
-
 export const getUserById = async (req, res) => {
   try {
     const id = req.userId;
     const user = await User.findById(id);
-    const data = { id:user._id, name:user.name , email:user.email};
+    const data = { id: user._id, name: user.name, email: user.email };
     res.status(200).json({
       success: true,
       data,
     });
-
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ message: "Internal server error" });
