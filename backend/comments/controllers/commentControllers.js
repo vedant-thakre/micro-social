@@ -47,9 +47,7 @@ export const getEvent = async (req, res) => {
   try {
     const { data, type } = req.body;
     const msg = "Recieved Event";
-    console.log(msg, type);
-
-    console.log(type, data);
+    console.log(msg, type, data);
 
     if (type === "CommentModerated") {
       const comment = await Comment.findByIdAndUpdate(data.id, {

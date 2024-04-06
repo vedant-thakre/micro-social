@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import AppContext, { fetchUserData } from "../context/appContext";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
-import AllComments, { getCommentsForPost } from "./AllComments";
+import AllComments from "./AllComments";
 import { MdDelete } from "react-icons/md";
 import { pastelColors, letterToNumber } from "../config/data";
 
@@ -34,9 +34,9 @@ const CreatePost = () => {
         userId: user.id,
         name: user.name,
       });
-      fetchPostData();
-      setPost({ title: "", description: "" });
       console.log(res.data);
+      // fetchPostData();
+      setPost({ title: "", description: "" });
     } catch (error) {
       console.error("Post create error:", error);
     }
@@ -48,20 +48,17 @@ const CreatePost = () => {
     navigate("/login");
   };
 
-
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
         `http://localhost:3002/api/v1/delete/${id}`
       );
       fetchPostData();
-      console.log(res.data);
+      //console.log(res.data);
     } catch (error) {
       console.error("Post create error:", error);
     }
   };
-
-
 
   // console.log(user);
 
@@ -79,8 +76,9 @@ const CreatePost = () => {
 
   const fetchPostData = async () => {
     try {
-      const res = await axios.get("http://localhost:3002/api/v1/all-posts");
-      setAllPosts(res.data.posts);
+      const res = await axios.get("http://localhost:3004/api/v1/post-com");
+      console.log("Post and Comments", res.data.data);
+      setAllPosts(res.data.data);
     } catch (error) {
       console.log(error);
     }
@@ -88,7 +86,6 @@ const CreatePost = () => {
 
   useEffect(() => {
     fetchPostData();
-  
   }, []);
 
   return (
@@ -168,19 +165,19 @@ const CreatePost = () => {
               position: "relative",
             }}
           >
-            {
-              user.id === item.userId ?  <MdDelete
-              onClick={() => handleDelete(item._id)}
-              fontSize={"22px"}
-              style={{
-                position: "absolute",
-                right: "8px",
-                top: "10px",
-                cursor: "pointer",
-                color: "#ff3d3d",
-              }}
-            /> : null
-            }
+            {user.id === item.userId ? (
+              <MdDelete
+                onClick={() => handleDelete(item._id)}
+                fontSize={"22px"}
+                style={{
+                  position: "absolute",
+                  right: "8px",
+                  top: "10px",
+                  cursor: "pointer",
+                  color: "#ff3d3d",
+                }}
+              />
+            ) : null}
             <h4
               style={{
                 textAlign: "center",
@@ -227,7 +224,11 @@ const CreatePost = () => {
             </div>
             <div style={{ height: "1px", background: "gray" }}></div>
 
-            <AllComments id={item._id} />
+            <AllComments
+              fetchPostData={fetchPostData}
+              comments={item.comments}
+              id={item.postId}
+            />
           </div>
         ))}
       </div>

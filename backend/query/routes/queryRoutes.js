@@ -1,11 +1,12 @@
 import express from 'express';
-import { getcomments, getposts, getusers, handleEvent } from '../controller/queryContoller.js';
+import { getPostsAndComments, getcomments, getposts, getusers, handleEvent } from '../controller/queryContoller.js';
 
 const router = express.Router();
 
 router.post("/events", handleEvent);
 router.get("/comm", getcomments);
 router.get("/post", getposts);
+router.get("/post-com", getPostsAndComments);
 router.get("/user", getusers);
 
 

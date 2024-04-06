@@ -23,7 +23,7 @@ export const emmitEvent = async (req, res) => {
        await axios.post("http://localhost:3005/api/v1/events", event);
      }
 
-     console.log("done");
+     console.log(type, "Event proceed");
 
     res
       .status(201)

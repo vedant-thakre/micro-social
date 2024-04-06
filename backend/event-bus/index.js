@@ -22,11 +22,6 @@ app.use(express.json());
 // routes
 app.use("/api/v1", eventRoutes);
 
-app.post("/events", async (req, res) => {
-
-
-});
-
 
 app.listen(PORT, () => {
   console.log(`Event bus is running on PORT ${PORT}`.yellow.bold);

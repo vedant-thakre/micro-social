@@ -12,6 +12,11 @@ export const createPost = async (req, res) => {
 
     const newPost = await Post.create({ title, description, userId, name });
 
+     res
+       .status(201)
+       .json({ message: "Post created successfully", post: newPost });
+   
+    console.log("before sending to obj bus");
     const event = await axios.post("http://localhost:3050/api/v1/events", {
       type: "PostCreated",
       data: {
@@ -22,13 +27,10 @@ export const createPost = async (req, res) => {
         name,
       },
     });
-
-    res
-      .status(201)
-      .json({ message: "Post created successfully", post: newPost });
+    console.log("after sending to obj bus");
   } catch (error) {
-    console.error("Error creating post:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.log("Error creating post:");
+    // res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -60,7 +62,6 @@ export const getEvent = async (req, res) => {
     console.log(msg, event.type);
     res.status(201).json({ message: "Work done successfully" });
   } catch (error) {
-    console.error("Error fetching posts:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.log("Error fetching posts:");
   }
 };

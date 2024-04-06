@@ -12,13 +12,12 @@ export const handleEvent = async (req, res) => {
         name: data.name,
         userId: data.id
       });
-      console.log(NewQueryUser);
       res.status(201).json({
         message: "QueryUser created successfully",
         data: NewQueryUser,
       });
     } else if (type == "PostCreated") {
-        console.log("Creating QueryPost",req.body);
+        console.log("Creating QueryPost");
       const NewQueryPost = await QueryPost.create({
           title: data.title,
           description: data.description,
@@ -26,7 +25,6 @@ export const handleEvent = async (req, res) => {
           userId: data.userId,
           name: data.name
       });
-      console.log(NewQueryPost);
       res
         .status(201)
         .json({
@@ -42,7 +40,6 @@ export const handleEvent = async (req, res) => {
             postId: data.postId,
             status: data.status,
         });
-        console.log(NewQueryComment);
         res.status(201)
             .json({
                 message: "QueryComment created successfully",
@@ -75,6 +72,7 @@ export const getcomments = async(req, res) => {
     });
     
 }
+
 export const getusers = async (req, res) => {
   try {
      const usersWithPosts = await QueryUser.aggregate([
@@ -101,9 +99,38 @@ export const getusers = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 export const getposts = async(req, res) => {
     const data = await QueryPost.find();
     res.status(201).json({
       data,
     });
 }
+
+export const getPostsAndComments = async (req, res) => {
+  try {
+    const postsWithComments = await QueryPost.aggregate([
+      {
+        $lookup: {
+          from: "querycomments", // Name of the comments collection
+          let: { postId: "$postId" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$postId", "$$postId"],
+                },
+              },
+            },
+          ],
+          as: "comments",
+        },
+      },
+    ]);
+    res.status(200).json({ data: postsWithComments });
+  } catch (error) {
+    console.error("Error fetching posts and comments:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+

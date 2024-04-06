@@ -3,23 +3,8 @@ import AppContext from "../context/appContext";
 import axios from "axios";
 import { pastelColors, letterToNumber } from "../config/data";
 
-export const getCommentsForPost = async (id, setAllComments) => {
-  try {
-    const res = await axios.get(
-      `http://localhost:3001/api/v1/all-comments/${id}`
-    );
-    const { data } = res;
-    setAllComments((prevComments) => ({
-      ...prevComments,
-      [id]: data.comments,
-    }));
-  } catch (error) {
-    console.error("Error fetching comments:", error);
-  }
-};
-
-const AllComments = ({ id }) => {
-  const { allComments, setAllComments, user } = useContext(AppContext);
+const AllComments = ({ id, comments, fetchPostData }) => {
+  const { user } = useContext(AppContext);
   const [content, setContent] = useState({});
 
   const handleCommentSubmit = async (e, id) => {
@@ -32,16 +17,16 @@ const AllComments = ({ id }) => {
       });
       console.log(res.data);
       setContent({ ...content, [id]: "" });
-      getCommentsForPost(id, setAllComments);
+      fetchPostData();
     } catch (error) {
       console.error("Post create error:", error);
     }
   };
 
-  console.log(allComments)
+  //console.log(comments)
 
   useEffect(() => {
-    getCommentsForPost(id, setAllComments);
+    fetchPostData();
   }, []);
 
   return (
@@ -50,7 +35,7 @@ const AllComments = ({ id }) => {
         Comments
         <span style={{ fontWeight: "400", color: "grey", marginLeft: "1px" }}>
           {" "}
-          {allComments[id] && allComments[id].length}{" "}
+          {comments && comments.length}{" "}
         </span>
       </h5>
       <form
@@ -80,16 +65,14 @@ const AllComments = ({ id }) => {
         style={{
           display: "flex",
           flexDirection: "column",
-          height: `${
-            allComments[id] && allComments[id].length ? "95px" : "0px"
-          }`,
+          height: `${comments && comments.length ? "95px" : "0px"}`,
           overflowY: "scroll",
           marginTop: "20px",
         }}
       >
-        {allComments[id]?.map((comment) => (
+        {comments?.map((comment) => (
           <div
-            key={comment._id}
+            key={comment.comId}
             style={{
               padding: "7px 5px",
               display: "flex",
