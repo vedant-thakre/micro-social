@@ -16,6 +16,7 @@ const AllComments = ({ id, comments, fetchPostData }) => {
         postId: id,
       });
       console.log(res.data);
+      console.log("Comment create ho gya bhai");
       setContent({ ...content, [id]: "" });
       fetchPostData();
     } catch (error) {

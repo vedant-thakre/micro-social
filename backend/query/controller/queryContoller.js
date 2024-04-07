@@ -1,10 +1,13 @@
 import QueryUser from "../models/queryUserModel.js";
 import QueryComment from "../models/queryCommentModel.js";
 import QueryPost from "../models/queryPostModel.js";
+import axios from 'axios';
 
 export const handleEvent = async (req, res) => {
   try {
-    const { data, type } = req.body;
+    const { data, type, id } = req.body;
+
+    console.log(req.body);
 
     if (type == "UserCreated") {
         console.log("Creating QueryUser");
@@ -52,12 +55,16 @@ export const handleEvent = async (req, res) => {
         { status: data.status},
         { new: true }
       );
+
+      console.log(UpdateComment);
+
       res.status(201).json({
         message: "QueryComment status updated successfully",
         data: UpdateComment,
       });
     }
-    
+    console.log("Updating event status using id", id);
+    await axios.put(`http://localhost:3050/api/v1/events/${id}`);
   } catch (error) {
     console.error("Error creating post:", error);
     res.status(500).json({ message: "Internal server error" });

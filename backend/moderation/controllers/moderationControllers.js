@@ -40,6 +40,8 @@ export const getEvent = async (req, res) => {
     const { data, type } = req.body;
     const msg = "Recieved Event";
 
+    console.log(msg, type);
+
     if (type === "CommentCreated") {
       const moderatedWords = await Moderation.find();
       const commentWords = data.content.split(/\s+/);
@@ -55,6 +57,8 @@ export const getEvent = async (req, res) => {
       } else {
         data.status = "approved";
       }
+
+      console.log("Comment moderated");
 
       const event = await axios.post("http://localhost:3050/api/v1/events", {
         type: "CommentModerated",

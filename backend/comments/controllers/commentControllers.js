@@ -10,6 +10,8 @@ export const createComment = async (req, res) => {
 
     const newCom = await Comment.create({ content, name, postId });
 
+    console.log(newCom);
+
     const event = await axios.post("http://localhost:3050/api/v1/events", {
       type: "CommentCreated",
       data: {
@@ -25,8 +27,8 @@ export const createComment = async (req, res) => {
       .status(201)
       .json({ message: "Comment added successfully", comment: newCom });
   } catch (error) {
-    console.error("Error creating post:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error creating adding comment:");
+    // res.status(500).json({ message: "Internal server error" });
   }
 };
 

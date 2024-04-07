@@ -9,6 +9,10 @@ const eventSchema = new mongoose.Schema(
     data: {
       type: Object,
       required: true,
+    },
+    processed: {
+      type: Boolean,
+      default: false,
     }
   },
   {

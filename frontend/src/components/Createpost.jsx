@@ -15,14 +15,11 @@ const CreatePost = () => {
   const navigate = useNavigate();
 
   const {
-    isAuthenticated,
     user,
     setUser,
     setIsAuthenticated,
     allPosts,
     setAllPosts,
-    allComments,
-    setAllComments,
   } = useContext(AppContext);
 
   const handlesubmit = async (e) => {
@@ -35,8 +32,9 @@ const CreatePost = () => {
         name: user.name,
       });
       console.log(res.data);
-      // fetchPostData();
       setPost({ title: "", description: "" });
+      console.log("fetchPostData function call");
+      fetchPostData();
     } catch (error) {
       console.error("Post create error:", error);
     }
@@ -46,6 +44,16 @@ const CreatePost = () => {
     localStorage.removeItem("token");
     setUser(null);
     navigate("/login");
+  };
+
+  const fetchPostData = async () => {
+    try {
+      const res = await axios.get("http://localhost:3004/api/v1/post-com");
+      console.log("Post and Comments", res.data.data);
+      setAllPosts(res.data.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleDelete = async (id) => {
@@ -73,16 +81,6 @@ const CreatePost = () => {
   }, []);
 
   //console.log(allPosts);
-
-  const fetchPostData = async () => {
-    try {
-      const res = await axios.get("http://localhost:3004/api/v1/post-com");
-      console.log("Post and Comments", res.data.data);
-      setAllPosts(res.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     fetchPostData();
@@ -165,7 +163,7 @@ const CreatePost = () => {
               position: "relative",
             }}
           >
-            {user.id === item.userId ? (
+            {user?.id === item?.userId ? (
               <MdDelete
                 onClick={() => handleDelete(item._id)}
                 fontSize={"22px"}
