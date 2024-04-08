@@ -23,8 +23,8 @@ export const emmitEvent = async (req, res) => {
        await axios.post("http://localhost:3001/api/v1/events", event);
        await axios.post("http://localhost:3002/api/v1/events", event);
        await axios.post("http://localhost:3003/api/v1/events", event);
-       await axios.post("http://localhost:3005/api/v1/events", event);
        await axios.post("http://localhost:3004/api/v1/events", {type, data, id:newEvent._id});
+       await axios.post("http://localhost:3005/api/v1/events", event);
      }
     
 
@@ -44,6 +44,21 @@ export const getAllEvents = async (req, res) => {
     const events = await Event.find({
       processed: false,
       type: { $ne: "CommentModerated" },
+    });
+    res
+      .status(200)
+      .json({ message: "Unprocessed Events retrieved successfully", events });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getModerationEvents = async (req, res) => {
+  try {
+    const events = await Event.find({
+      type: "CommentCreated",
+      "data.status": "pending",
     });
     res
       .status(200)
